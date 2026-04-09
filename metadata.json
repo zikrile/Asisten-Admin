@@ -1,0 +1,5 @@
+{
+  "name": "DocuGen: Surat Pesanan & BAST",
+  "description": "Aplikasi pengelola Surat Pesanan Barang dan Berita Acara Serah Terima (BAST) dengan fitur ekspor PDF.",
+  "requestFramePermissions": []
+}
