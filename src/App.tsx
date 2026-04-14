@@ -41,6 +41,7 @@ interface SavedParty extends PartyInfo {
     name: string;
     position: string;
     nip: string;
+    address?: string;
   };
 }
 
@@ -59,11 +60,14 @@ export default function App() {
     name: '', address: '', contact: '', representative: '', position: 'Kepala Sekolah', nip: '', email: ''
   });
   const [treasurer, setTreasurer] = useState({
-    name: '', position: 'Bendahara Sekolah', nip: ''
+    name: '', position: 'Bendahara Sekolah', nip: '', address: ''
   });
+  const [pelaksana, setPelaksana] = useState({ name: '', nip: '' });
   const [documentDate, setDocumentDate] = useState(new Date().toISOString().split('T')[0]);
+  const [perencanaanDate, setPerencanaanDate] = useState(new Date().toISOString().split('T')[0]);
   const [orderNumber, setOrderNumber] = useState('001/SPB/2024');
   const [bastNumber, setBastNumber] = useState('001/BAST/2024');
+  const [itemCategory, setItemCategory] = useState('Pembelian ATK');
   const [items, setItems] = useState<Item[]>([]);
   const [newItem, setNewItem] = useState({ name: '', quantity: 1, unit: 'Pcs', price: 0 });
 
@@ -83,9 +87,12 @@ export default function App() {
       if (parsed.vendor) setVendor(parsed.vendor);
       if (parsed.school) setSchool(parsed.school);
       if (parsed.treasurer) setTreasurer(parsed.treasurer);
+      if (parsed.pelaksana) setPelaksana(parsed.pelaksana);
       if (parsed.documentDate) setDocumentDate(parsed.documentDate);
+      if (parsed.perencanaanDate) setPerencanaanDate(parsed.perencanaanDate);
       if (parsed.orderNumber) setOrderNumber(parsed.orderNumber);
       if (parsed.bastNumber) setBastNumber(parsed.bastNumber);
+      if (parsed.itemCategory) setItemCategory(parsed.itemCategory);
       if (parsed.items) setItems(parsed.items);
     }
   }, []);
@@ -97,9 +104,9 @@ export default function App() {
 
   // Save Current Form to localStorage when changed (so it doesn't disappear on refresh)
   useEffect(() => {
-    const currentForm = { vendor, school, treasurer, documentDate, orderNumber, bastNumber, items };
+    const currentForm = { vendor, school, treasurer, pelaksana, documentDate, perencanaanDate, orderNumber, bastNumber, itemCategory, items };
     localStorage.setItem('docugen_current_form', JSON.stringify(currentForm));
-  }, [vendor, school, treasurer, documentDate, orderNumber, bastNumber, items]);
+  }, [vendor, school, treasurer, pelaksana, documentDate, perencanaanDate, orderNumber, bastNumber, itemCategory, items]);
 
   // CRUD Functions
   const saveCurrentVendor = () => {
@@ -251,7 +258,7 @@ export default function App() {
           </div>
           <CetakDokumen 
             dataBarang={items}
-            dataPihak={{ vendor, school, treasurer, documentDate, orderNumber, bastNumber }}
+            dataPihak={{ vendor, school, treasurer, pelaksana, documentDate, perencanaanDate, orderNumber, bastNumber, itemCategory }}
           />
         </header>
 
@@ -309,13 +316,14 @@ export default function App() {
                       <input type="text" placeholder="Nama Bendahara" className="w-full px-3 py-2 border border-neutral-200 rounded-lg focus:ring-2 focus:ring-neutral-900 outline-none transition-all text-sm" value={treasurer.name} onChange={e => setTreasurer({...treasurer, name: e.target.value})} />
                       <input type="text" placeholder="NIP Bendahara" className="w-full px-3 py-2 border border-neutral-200 rounded-lg focus:ring-2 focus:ring-neutral-900 outline-none transition-all text-sm" value={treasurer.nip} onChange={e => setTreasurer({...treasurer, nip: e.target.value})} />
                     </div>
+                    <textarea placeholder="Alamat Pribadi Bendahara" className="w-full px-3 py-2 border border-neutral-200 rounded-lg focus:ring-2 focus:ring-neutral-900 outline-none transition-all text-sm min-h-[60px]" value={treasurer.address} onChange={e => setTreasurer({...treasurer, address: e.target.value})} />
                   </div>
                 </div>
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4 pt-4 border-t border-neutral-100">
                 <div className="space-y-1">
-                  <label className="text-xs font-medium text-neutral-500">Tanggal Dokumen</label>
+                  <label className="text-xs font-medium text-neutral-500">Tanggal Dokumen (SP & BAST)</label>
                   <input type="date" className="w-full px-3 py-2 border border-neutral-200 rounded-lg focus:ring-2 focus:ring-neutral-900 outline-none text-sm" value={documentDate} onChange={e => setDocumentDate(e.target.value)} />
                 </div>
                 <div className="space-y-1">
@@ -325,6 +333,25 @@ export default function App() {
                 <div className="space-y-1">
                   <label className="text-xs font-medium text-neutral-500">No. BAST</label>
                   <input type="text" className="w-full px-3 py-2 border border-neutral-200 rounded-lg focus:ring-2 focus:ring-neutral-900 outline-none text-sm" value={bastNumber} onChange={e => setBastNumber(e.target.value)} />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-4 border-t border-neutral-100">
+                <div className="space-y-1">
+                  <label className="text-xs font-medium text-neutral-500">Tanggal Perencanaan</label>
+                  <input type="date" className="w-full px-3 py-2 border border-neutral-200 rounded-lg focus:ring-2 focus:ring-neutral-900 outline-none text-sm" value={perencanaanDate} onChange={e => setPerencanaanDate(e.target.value)} />
+                </div>
+                <div className="space-y-1">
+                  <label className="text-xs font-medium text-neutral-500">Kategori Barang/Jasa</label>
+                  <input type="text" placeholder="Contoh: Pembelian ATK" className="w-full px-3 py-2 border border-neutral-200 rounded-lg focus:ring-2 focus:ring-neutral-900 outline-none text-sm" value={itemCategory} onChange={e => setItemCategory(e.target.value)} />
+                </div>
+                <div className="space-y-1">
+                  <label className="text-xs font-medium text-neutral-500">Nama Pelaksana</label>
+                  <input type="text" placeholder="Nama Pelaksana" className="w-full px-3 py-2 border border-neutral-200 rounded-lg focus:ring-2 focus:ring-neutral-900 outline-none text-sm" value={pelaksana.name} onChange={e => setPelaksana({...pelaksana, name: e.target.value})} />
+                </div>
+                <div className="space-y-1">
+                  <label className="text-xs font-medium text-neutral-500">NIP Pelaksana</label>
+                  <input type="text" placeholder="NIP Pelaksana" className="w-full px-3 py-2 border border-neutral-200 rounded-lg focus:ring-2 focus:ring-neutral-900 outline-none text-sm" value={pelaksana.nip} onChange={e => setPelaksana({...pelaksana, nip: e.target.value})} />
                 </div>
               </div>
             </section>
