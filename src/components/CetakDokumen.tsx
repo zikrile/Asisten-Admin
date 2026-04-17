@@ -83,7 +83,7 @@ const CetakDokumen: React.FC<CetakDokumenProps> = ({ dataBarang, dataPihak }) =>
     const element = ref.current;
     
     const opt = {
-      margin: [10, 25.4, 25.4, 25.4] as [number, number, number, number], // [Atas 1cm, Kanan 2.54cm, Bawah 2.54cm, Kiri 2.54cm]
+      margin: [10, 25.4, 15, 25.4] as [number, number, number, number], // [Atas 1cm, Kanan 2.5cm, Bawah 1.5cm, Kiri 2.5cm]
       filename: `${namaFile}.pdf`,
       image: { type: 'jpeg' as const, quality: 0.98 },
       html2canvas: { 
@@ -122,7 +122,7 @@ const CetakDokumen: React.FC<CetakDokumenProps> = ({ dataBarang, dataPihak }) =>
   };
 
   const KopSurat = () => (
-    <div className="mb-6">
+    <div className="mb-4">
       <img 
         src="/kop-surat.png" 
         alt="Kop Surat" 
@@ -182,10 +182,10 @@ const CetakDokumen: React.FC<CetakDokumenProps> = ({ dataBarang, dataPihak }) =>
           <tr>
             <th className="border border-black p-2 text-left align-top w-8">No</th>
             <th className="border border-black p-2 text-left align-top">Nama Barang</th>
-            <th className="border border-black p-2 text-left align-top w-16">Jumlah</th>
-            <th className="border border-black p-2 text-left align-top w-20">Satuan</th>
-            <th className="border border-black p-2 text-left align-top w-32">Harga<br/>Satuan (Rp)</th>
-            <th className="border border-black p-2 text-left align-top w-32">Jumlah<br/>Harga (Rp)</th>
+            <th className="border border-black p-2 text-left align-top w-14">Jumlah</th>
+            <th className="border border-black p-2 text-left align-top w-16">Satuan</th>
+            <th className="border border-black p-2 text-left align-top w-28">Harga<br/>Satuan (Rp)</th>
+            <th className="border border-black p-2 text-left align-top w-28">Jumlah<br/>Harga (Rp)</th>
           </tr>
         </thead>
         <tbody>
@@ -266,19 +266,19 @@ const CetakDokumen: React.FC<CetakDokumenProps> = ({ dataBarang, dataPihak }) =>
         </div>
       </div>
 
-      <div className="mb-4">
+      <div className="mb-2">
         <p>Pihak Pertama telah menyerahkan kepada Pihak Kedua barang-barang sesuai pesanan dengan rincian sebagai berikut:</p>
       </div>
 
-      <table className="w-full border-collapse border border-black mb-4 text-[12pt]" style={{ fontFamily: '"Times New Roman", Times, serif' }}>
+      <table className="w-full border-collapse border border-black mb-2 text-[12pt]" style={{ fontFamily: '"Times New Roman", Times, serif' }}>
         <thead>
           <tr>
             <th className="border border-black p-2 text-left align-top w-8">No</th>
             <th className="border border-black p-2 text-left align-top">Nama Barang</th>
-            <th className="border border-black p-2 text-left align-top w-16">Jumlah</th>
-            <th className="border border-black p-2 text-left align-top w-20">Satuan</th>
-            <th className="border border-black p-2 text-left align-top w-32">Harga<br/>Satuan (Rp)</th>
-            <th className="border border-black p-2 text-left align-top w-32">Jumlah<br/>Harga (Rp)</th>
+            <th className="border border-black p-2 text-left align-top w-14">Jumlah</th>
+            <th className="border border-black p-2 text-left align-top w-16">Satuan</th>
+            <th className="border border-black p-2 text-left align-top w-28">Harga<br/>Satuan (Rp)</th>
+            <th className="border border-black p-2 text-left align-top w-28">Jumlah<br/>Harga (Rp)</th>
           </tr>
         </thead>
         <tbody>
@@ -303,7 +303,7 @@ const CetakDokumen: React.FC<CetakDokumenProps> = ({ dataBarang, dataPihak }) =>
         </tbody>
       </table>
 
-      <div className="mb-4">
+      <div className="mb-2">
         <p>Barang-barang tersebut telah diterima dalam kondisi baik dan lengkap.</p>
         <p>Demikian berita acara ini dibuat untuk dipergunakan sebagaimana mestinya.</p>
       </div>
@@ -328,8 +328,8 @@ const CetakDokumen: React.FC<CetakDokumenProps> = ({ dataBarang, dataPihak }) =>
               </td>
             </tr>
             <tr>
-              <td className="h-20"></td>
-              <td className="h-20"></td>
+              <td className="h-16"></td>
+              <td className="h-16"></td>
             </tr>
             <tr>
               <td className="w-[60%] text-left align-bottom pb-2">
