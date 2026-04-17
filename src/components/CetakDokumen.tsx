@@ -105,7 +105,7 @@ const CetakDokumen: React.FC<CetakDokumenProps> = ({ dataBarang, dataPihak }) =>
     const element = ref.current;
     
     const opt = {
-      margin: [12.7, 12.7, 12.7, 12.7] as [number, number, number, number],
+      margin: [5, 12.7, 12.7, 12.7] as [number, number, number, number],
       filename: `${namaFile}.pdf`,
       image: { type: 'jpeg' as const, quality: 0.98 },
       html2canvas: { 
@@ -114,7 +114,7 @@ const CetakDokumen: React.FC<CetakDokumenProps> = ({ dataBarang, dataPihak }) =>
         letterRendering: true,
         logging: false
       },
-      jsPDF: { unit: 'mm', format: [330, 210], orientation: 'landscape' as const },
+      jsPDF: { unit: 'mm', format: [330, 210] as [number, number], orientation: 'landscape' as const },
       pagebreak: { mode: ['css', 'legacy'], before: '.page-break' }
     };
 
@@ -144,18 +144,18 @@ const CetakDokumen: React.FC<CetakDokumenProps> = ({ dataBarang, dataPihak }) =>
   const contentStyle = { width: '159.2mm' };
 
   const SuratPesananContent = () => (
-    <div className="bg-white text-black font-serif text-[12pt] leading-normal mx-auto" style={contentStyle}>
+    <div className="bg-white text-black font-serif text-[12pt] leading-normal mx-auto" style={{ ...contentStyle, fontFamily: '"Times New Roman", Times, serif' }}>
       <KopSurat />
 
       <div className="text-center mb-6">
-        <h3 className="text-[16pt] font-bold uppercase underline">SURAT PESANAN BARANG</h3>
-        <p>Nomor : {dataPihak.orderNumber}</p>
-        <p>Tanggal : {new Date(dataPihak.documentDate).getDate()} {getMonthName(dataPihak.documentDate)} {new Date(dataPihak.documentDate).getFullYear()}</p>
+        <h3 className="text-[12pt] font-bold uppercase">SURAT PESANAN BARANG</h3>
+        <p className="text-[12pt] font-normal">Nomor : {dataPihak.orderNumber}</p>
+        <p className="text-[12pt] font-normal">Tanggal : {new Date(dataPihak.documentDate).getDate()} {getMonthName(dataPihak.documentDate)} {new Date(dataPihak.documentDate).getFullYear()}</p>
       </div>
 
       <div className="mb-4">
         <p>Kepada</p>
-        <p>Yth. <strong>{dataPihak.vendor.representative || 'Pemilik Toko Kurnia Jaya'}</strong></p>
+        <p>Yth. <strong>{dataPihak.vendor.position || 'Pemilik'} {dataPihak.vendor.name || 'Toko Kurnia Jaya'}</strong></p>
         <p>{dataPihak.vendor.address || 'Jl. Raya Cipeundeuy - Cikalong Wetan, Bandung Barat'}</p>
         <table className="text-[12pt] mt-1">
           <tbody>
@@ -177,31 +177,35 @@ const CetakDokumen: React.FC<CetakDokumenProps> = ({ dataBarang, dataPihak }) =>
         <p>Dengan hormat, Bersama surat ini kami memesan barang sesuai daftar berikut:</p>
       </div>
 
-      <table className="w-full border-collapse border-2 border-black mb-4 text-[12pt]">
+      <table className="w-full border-collapse border border-black mb-4 text-[12pt]" style={{ fontFamily: '"Times New Roman", Times, serif' }}>
         <thead>
           <tr>
-            <th className="border-2 border-black p-1 text-center w-8">No</th>
-            <th className="border-2 border-black p-1 text-center">Nama Barang</th>
-            <th className="border-2 border-black p-1 text-center w-16">Jumlah</th>
-            <th className="border-2 border-black p-1 text-center w-16">Satuan</th>
-            <th className="border-2 border-black p-1 text-center w-32">Harga Satuan (Rp)</th>
-            <th className="border-2 border-black p-1 text-center w-32">Jumlah Harga (Rp)</th>
+            <th className="border border-black p-2 text-left align-top w-8">No</th>
+            <th className="border border-black p-2 text-left align-top">Nama Barang</th>
+            <th className="border border-black p-2 text-left align-top w-16">Jumlah</th>
+            <th className="border border-black p-2 text-left align-top w-20">Satuan</th>
+            <th className="border border-black p-2 text-left align-top w-32">Harga<br/>Satuan (Rp)</th>
+            <th className="border border-black p-2 text-left align-top w-32">Jumlah<br/>Harga (Rp)</th>
           </tr>
         </thead>
         <tbody>
           {dataBarang.map((item, index) => (
             <tr key={item.id}>
-              <td className="border-2 border-black p-1 text-center">{index + 1}</td>
-              <td className="border-2 border-black p-1">{item.name}</td>
-              <td className="border-2 border-black p-1 text-center">{item.quantity}</td>
-              <td className="border-2 border-black p-1 text-center">{item.unit}</td>
-              <td className="border-2 border-black p-1 text-right">{formatCurrency(item.price)}</td>
-              <td className="border-2 border-black p-1 text-right">{formatCurrency(item.quantity * item.price)}</td>
+              <td className="border border-black p-2 text-left align-top">{index + 1}</td>
+              <td className="border border-black p-2 text-left align-top">{item.name}</td>
+              <td className="border border-black p-2 text-left align-top">{item.quantity}</td>
+              <td className="border border-black p-2 text-left align-top">{item.unit}</td>
+              <td className="border border-black p-2 text-left align-top">{formatCurrency(item.price)}</td>
+              <td className="border border-black p-2 text-left align-top">{formatCurrency(item.quantity * item.price)}</td>
             </tr>
           ))}
           <tr className="font-bold">
-            <td colSpan={5} className="border-2 border-black p-1 text-center uppercase">Total</td>
-            <td className="border-2 border-black p-1 text-right">{formatCurrency(totalAmount)}</td>
+            <td className="border border-black p-2"></td>
+            <td className="border border-black p-2 text-left">Total</td>
+            <td className="border border-black p-2"></td>
+            <td className="border border-black p-2"></td>
+            <td className="border border-black p-2"></td>
+            <td className="border border-black p-2 text-left">{formatCurrency(totalAmount)}</td>
           </tr>
         </tbody>
       </table>
@@ -210,31 +214,33 @@ const CetakDokumen: React.FC<CetakDokumenProps> = ({ dataBarang, dataPihak }) =>
         <p>Demikian surat pesanan ini kami buat untuk dapat diproses sebagaimana mestinya.</p>
       </div>
 
-      <div className="flex justify-end">
-        <div className="text-center w-64">
+      <div className="flex justify-end" style={{ pageBreakInside: 'avoid' }}>
+        <div className="text-center w-64 pb-8">
           <p>Bandung Barat, {new Date(dataPihak.documentDate).getDate()} {getMonthName(dataPihak.documentDate)} {new Date(dataPihak.documentDate).getFullYear()}</p>
-          <p className="mb-20">Bendahara Sekolah,</p>
+          <p>Bendahara Sekolah,</p>
+          <div className="h-24"></div>
           <p className="font-bold underline">{dataPihak.treasurer.name || 'Kandar Permana, S.Pd'}</p>
-          <p>NIP. {dataPihak.treasurer.nip || '19670614 199301 1 002'}</p>
+          <p className="pb-2">NIP. {dataPihak.treasurer.nip || '19670614 199301 1 002'}</p>
         </div>
       </div>
     </div>
   );
 
   const BASTContent = () => (
-    <div className="bg-white text-black font-serif text-[12pt] leading-normal mx-auto" style={contentStyle}>
+    <div className="bg-white text-black font-serif text-[12pt] leading-normal mx-auto" style={{ ...contentStyle, fontFamily: '"Times New Roman", Times, serif' }}>
       <KopSurat />
 
-      <div className="text-center mb-6">
-        <h3 className="text-[16pt] font-bold uppercase underline">BERITA ACARA SERAH TERIMA BARANG</h3>
-        <p>Nomor : {dataPihak.bastNumber}</p>
+      <div className="text-center mb-4">
+        <h3 className="text-[12pt] font-bold uppercase">BERITA ACARA SERAH TERIMA BARANG</h3>
+        <p className="text-[12pt] font-normal leading-snug">Nomor : {dataPihak.bastNumber}</p>
+        <p className="text-[12pt] font-normal leading-snug">Tanggal : {new Date(dataPihak.documentDate).getDate()} {getMonthName(dataPihak.documentDate)} {new Date(dataPihak.documentDate).getFullYear()}</p>
       </div>
 
-      <div className="mb-4 text-justify">
+      <div className="mb-3 text-justify leading-snug">
         <p>Pada hari ini, {getDayName(dataPihak.documentDate)} tanggal {terbilang(new Date(dataPihak.documentDate).getDate())} bulan {getMonthName(dataPihak.documentDate).toLowerCase()} tahun {terbilang(new Date(dataPihak.documentDate).getFullYear())}, kami yang bertanda tangan di bawah ini:</p>
       </div>
 
-      <div className="mb-4 space-y-4">
+      <div className="mb-3 space-y-2">
         <div>
           <p className="font-bold mb-1">Pihak Pertama</p>
           <table className="ml-4 text-[12pt]">
@@ -264,31 +270,35 @@ const CetakDokumen: React.FC<CetakDokumenProps> = ({ dataBarang, dataPihak }) =>
         <p>Pihak Pertama telah menyerahkan kepada Pihak Kedua barang-barang sesuai pesanan dengan rincian sebagai berikut:</p>
       </div>
 
-      <table className="w-full border-collapse border-2 border-black mb-4 text-[12pt]">
+      <table className="w-full border-collapse border border-black mb-4 text-[12pt]" style={{ fontFamily: '"Times New Roman", Times, serif' }}>
         <thead>
           <tr>
-            <th className="border-2 border-black p-1 text-center w-8">No</th>
-            <th className="border-2 border-black p-1 text-center">Nama Barang</th>
-            <th className="border-2 border-black p-1 text-center w-16">Jumlah</th>
-            <th className="border-2 border-black p-1 text-center w-16">Satuan</th>
-            <th className="border-2 border-black p-1 text-center w-32">Satuan Harga (Rp)</th>
-            <th className="border-2 border-black p-1 text-center w-32">Jumlah Harga (Rp)</th>
+            <th className="border border-black p-2 text-left align-top w-8">No</th>
+            <th className="border border-black p-2 text-left align-top">Nama Barang</th>
+            <th className="border border-black p-2 text-left align-top w-16">Jumlah</th>
+            <th className="border border-black p-2 text-left align-top w-20">Satuan</th>
+            <th className="border border-black p-2 text-left align-top w-32">Harga<br/>Satuan (Rp)</th>
+            <th className="border border-black p-2 text-left align-top w-32">Jumlah<br/>Harga (Rp)</th>
           </tr>
         </thead>
         <tbody>
           {dataBarang.map((item, index) => (
             <tr key={item.id}>
-              <td className="border-2 border-black p-1 text-center">{index + 1}</td>
-              <td className="border-2 border-black p-1">{item.name}</td>
-              <td className="border-2 border-black p-1 text-center">{item.quantity}</td>
-              <td className="border-2 border-black p-1 text-center">{item.unit}</td>
-              <td className="border-2 border-black p-1 text-right">{formatCurrency(item.price)}</td>
-              <td className="border-2 border-black p-1 text-right">{formatCurrency(item.quantity * item.price)}</td>
+              <td className="border border-black p-2 text-left align-top">{index + 1}</td>
+              <td className="border border-black p-2 text-left align-top">{item.name}</td>
+              <td className="border border-black p-2 text-left align-top">{item.quantity}</td>
+              <td className="border border-black p-2 text-left align-top">{item.unit}</td>
+              <td className="border border-black p-2 text-left align-top">{formatCurrency(item.price)}</td>
+              <td className="border border-black p-2 text-left align-top">{formatCurrency(item.quantity * item.price)}</td>
             </tr>
           ))}
           <tr className="font-bold">
-            <td colSpan={5} className="border-2 border-black p-1 text-left uppercase">Total</td>
-            <td className="border-2 border-black p-1 text-right">Rp. {formatCurrency(totalAmount)}</td>
+            <td className="border border-black p-2"></td>
+            <td className="border border-black p-2 text-left">Total</td>
+            <td className="border border-black p-2"></td>
+            <td className="border border-black p-2"></td>
+            <td className="border border-black p-2"></td>
+            <td className="border border-black p-2 text-left">{formatCurrency(totalAmount)}</td>
           </tr>
         </tbody>
       </table>
@@ -298,22 +308,40 @@ const CetakDokumen: React.FC<CetakDokumenProps> = ({ dataBarang, dataPihak }) =>
         <p>Demikian berita acara ini dibuat untuk dipergunakan sebagaimana mestinya.</p>
       </div>
 
-      <div className="flex justify-end mb-4">
-        <p>Bandung Barat, {new Date(dataPihak.documentDate).getDate()} {getMonthName(dataPihak.documentDate)} {new Date(dataPihak.documentDate).getFullYear()}</p>
-      </div>
-
-      <div className="grid grid-cols-2 gap-8 text-center" style={{ pageBreakInside: 'avoid' }}>
-        <div>
-          <p className="font-bold">Pihak Pertama</p>
-          <p className="mb-20">Pemilik Toko Kurnia Jaya</p>
-          <p className="font-bold underline">{dataPihak.vendor.representative || 'Siti Kurnia'}</p>
-        </div>
-        <div>
-          <p className="font-bold">Pihak Kedua</p>
-          <p className="mb-20">Bendahara SD Negeri Sindangpalay</p>
-          <p className="font-bold underline">{dataPihak.treasurer.name || 'Kandar Permana, S.Pd'}</p>
-          <p>NIP. {dataPihak.treasurer.nip || '19670614 199301 1 002'}</p>
-        </div>
+      <div className="pb-2">
+        <table className="w-full mt-2" style={{ pageBreakInside: 'avoid' }}>
+          <tbody>
+            <tr>
+              <td className="w-[60%] text-left align-top"></td>
+              <td className="w-[40%] text-left align-top pb-2">
+                <p>Bandung Barat, {new Date(dataPihak.documentDate).getDate()} {getMonthName(dataPihak.documentDate)} {new Date(dataPihak.documentDate).getFullYear()}</p>
+              </td>
+            </tr>
+            <tr>
+              <td className="w-[60%] text-left align-top">
+                <p className="font-bold">Pihak Pertama</p>
+                <p>{dataPihak.vendor.position ? `${dataPihak.vendor.position} ${dataPihak.vendor.name}` : 'Pemilik Toko Kurnia Jaya'}</p>
+              </td>
+              <td className="w-[40%] text-left align-top">
+                <p className="font-bold">Pihak Kedua</p>
+                <p>{dataPihak.treasurer.position ? dataPihak.treasurer.position : 'Bendahara SD Negeri Sindangpalay'}</p>
+              </td>
+            </tr>
+            <tr>
+              <td className="h-20"></td>
+              <td className="h-20"></td>
+            </tr>
+            <tr>
+              <td className="w-[60%] text-left align-bottom pb-2">
+                <p className="font-bold">{dataPihak.vendor.representative || 'Siti Kurnia'}</p>
+              </td>
+              <td className="w-[40%] text-left align-bottom pb-2">
+                <p className="font-bold underline">{dataPihak.treasurer.name || 'Kandar Permana, S.Pd'}</p>
+                <p>NIP. {dataPihak.treasurer.nip || '19670614 199301 1 002'}</p>
+              </td>
+            </tr>
+          </tbody>
+        </table>
       </div>
     </div>
   );
@@ -324,7 +352,7 @@ const CetakDokumen: React.FC<CetakDokumenProps> = ({ dataBarang, dataPihak }) =>
     const totalItems = dataBarang.reduce((sum, item) => sum + item.quantity, 0);
 
     return (
-      <div className="bg-white text-black font-sans text-[11pt] leading-normal mx-auto" style={contentStyleLandscape}>
+      <div className="bg-white text-black font-serif text-[11pt] leading-normal mx-auto" style={{ ...contentStyleLandscape, fontFamily: '"Times New Roman", Times, serif' }}>
         <div className="text-center mb-6">
           <h3 className="text-[14pt] font-bold">Dokumen Perencanaan</h3>
         </div>
@@ -344,35 +372,33 @@ const CetakDokumen: React.FC<CetakDokumenProps> = ({ dataBarang, dataPihak }) =>
           </div>
         </div>
 
-        <table border={1} style={{ width: '100%', borderCollapse: 'collapse' }} className="w-full border-collapse border-2 border-black mb-6 text-[10pt]">
+        <table border={1} style={{ width: '100%', borderCollapse: 'collapse' }} className="w-full border-collapse border border-black mb-2 text-[10pt]">
           <thead>
             <tr>
-              <th className="border border-black p-3 text-center w-12 font-bold"></th>
-              <th className="border border-black p-3 text-center w-64 font-bold">Jenis</th>
-              <th className="border border-black p-3 text-center font-bold">Keterangan</th>
+              <th className="border border-black px-2 py-1 text-center w-12 font-bold"></th>
+              <th className="border border-black px-2 py-1 text-center w-64 font-bold">Jenis</th>
+              <th className="border border-black px-2 py-1 text-center font-bold">Keterangan</th>
             </tr>
           </thead>
           <tbody>
             <tr>
-              <td className="border border-black p-3 text-center font-bold">1</td>
-              <td className="border border-black p-3 font-bold">Jumlah barang/ jasa</td>
-              <td className="border border-black p-3 text-center">{totalItems}</td>
+              <td className="border border-black px-2 py-1 text-center font-bold">1</td>
+              <td className="border border-black px-2 py-1 font-bold">Jumlah barang/ jasa</td>
+              <td className="border border-black px-2 py-1 text-center">{totalItems}</td>
             </tr>
             <tr>
-              <td className="border border-black p-3 text-center font-bold align-top">2</td>
-              <td className="border border-black p-3 font-bold align-top">Spesifikasi / ruang lingkup barang/ jasa</td>
-              <td className="border border-black p-3">
-                <div className="space-y-2">
+              <td className="border border-black px-2 pt-1 pb-2 text-center font-bold align-top">2</td>
+              <td className="border border-black px-2 pt-1 pb-2 font-bold align-top">Spesifikasi / ruang lingkup barang/ jasa</td>
+              <td className="border border-black px-2 pt-1 pb-2 align-top">
+                <div>
                   {dataBarang.map((item, index) => (
-                    <div key={item.id} className="flex gap-2">
-                      <span className="font-bold">{index + 1}.</span>
-                      <div>
+                    <div key={item.id} className="flex gap-1 mb-2 last:mb-0">
+                      <span className="font-bold text-[7pt]" style={{ lineHeight: '1.2' }}>{index + 1}.</span>
+                      <div className="flex flex-col text-[7pt]" style={{ lineHeight: '1.2' }}>
                         <span className="font-bold">{item.name}</span>
-                        <div className="text-[7pt] mt-0.5 flex flex-col" style={{ gap: '1pt' }}>
-                          <div style={{ marginBottom: '1pt' }}>DPP: Rp. {formatCurrency(item.price)}</div>
-                          <div style={{ marginBottom: '1pt' }}>PPN (0%): Rp. 0</div>
-                          <div style={{ marginBottom: '1pt' }}>{item.quantity} {item.unit} × Rp. {formatCurrency(item.price)} = Rp. {formatCurrency(item.quantity * item.price)}</div>
-                        </div>
+                        <span>DPP: Rp. {formatCurrency(item.price)}</span>
+                        <span>PPN (0%): Rp. 0</span>
+                        <span>{item.quantity} {item.unit} × Rp. {formatCurrency(item.price)} = Rp. {formatCurrency(item.quantity * item.price)}</span>
                       </div>
                     </div>
                   ))}
@@ -380,24 +406,24 @@ const CetakDokumen: React.FC<CetakDokumenProps> = ({ dataBarang, dataPihak }) =>
               </td>
             </tr>
             <tr>
-              <td className="border border-black p-3 text-center font-bold">3</td>
-              <td className="border border-black p-3 font-bold">Waktu serah terima</td>
-              <td className="border border-black p-3"></td>
+              <td className="border border-black px-2 py-1 text-center font-bold">3</td>
+              <td className="border border-black px-2 py-1 font-bold">Waktu serah terima</td>
+              <td className="border border-black px-2 py-1"></td>
             </tr>
             <tr>
-              <td className="border border-black p-3 text-center font-bold">4</td>
-              <td className="border border-black p-3 font-bold">Lokasi serah terima</td>
-              <td className="border border-black p-3 text-center">{dataPihak.school.address}</td>
+              <td className="border border-black px-2 py-1 text-center font-bold">4</td>
+              <td className="border border-black px-2 py-1 font-bold">Lokasi serah terima</td>
+              <td className="border border-black px-2 py-1 text-center">{dataPihak.school.address}</td>
             </tr>
             <tr>
-              <td className="border border-black p-3 text-center font-bold">5</td>
-              <td className="border border-black p-3 font-bold">Alokasi anggaran</td>
-              <td className="border border-black p-3 text-center">BOS Reguler</td>
+              <td className="border border-black px-2 py-1 text-center font-bold">5</td>
+              <td className="border border-black px-2 py-1 font-bold">Alokasi anggaran</td>
+              <td className="border border-black px-2 py-1 text-center">BOS Reguler</td>
             </tr>
             <tr style={{ pageBreakInside: 'avoid' }}>
-              <td className="border border-black p-3 text-center font-bold align-top">6</td>
-              <td className="border border-black p-3 font-bold align-top">Persyaratan penyedia</td>
-              <td className="border border-black p-3">
+              <td className="border border-black px-2 py-1 text-center font-bold align-top">6</td>
+              <td className="border border-black px-2 py-1 font-bold align-top">Persyaratan penyedia</td>
+              <td className="border border-black px-2 py-1">
                 Perorangan/ Badan Usaha Memenuhi syarat sebagai berikut:<br/>
                 a. Identitas Penyedia<br/>
                 b. NPWP
@@ -406,12 +432,13 @@ const CetakDokumen: React.FC<CetakDokumenProps> = ({ dataBarang, dataPihak }) =>
           </tbody>
         </table>
 
-        <div className="flex justify-end pb-8" style={{ pageBreakInside: 'avoid' }}>
-          <div className="w-64">
+        <div className="flex justify-end" style={{ pageBreakInside: 'avoid' }}>
+          <div className="w-64 pb-2">
             <p>Bandung Barat, {new Date(dataPihak.perencanaanDate).getDate()} {getMonthName(dataPihak.perencanaanDate)} {new Date(dataPihak.perencanaanDate).getFullYear()}</p>
-            <p className="mb-20">Pelaksana</p>
+            <p>Pelaksana</p>
+            <div className="h-16"></div>
             <p className="font-bold underline">{dataPihak.pelaksana.name || dataPihak.treasurer.name}</p>
-            <p className="pb-2">NIP. {dataPihak.pelaksana.nip || dataPihak.treasurer.nip}</p>
+            <p>NIP. {dataPihak.pelaksana.nip || dataPihak.treasurer.nip}</p>
           </div>
         </div>
       </div>
